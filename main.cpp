@@ -3,18 +3,39 @@
 #include "kruh.h"
 #include<time.h>
 
+
+int compA(const void * a1, const void *a2);
+int compD(const void * a1, const void *a2);
+int compNazov(const void * a1, const void *a2);
+
 int main()
 {
     //float cislo = Kruh::getfloat(true, true);
     //std::cout<<cislo;
     srand(time(NULL));
-    Kruh Kruhy[10];
-    Kruh::generuj(Kruhy, 10);
-    Kruh::zorad(Kruhy, 10);
-    Kruh::vypisKruhy(Kruhy, 10);
-    //Kruh * KruhyNew=Kruh::generuj( 10); //neviem o co tu ide
-    //Kruh::vypisKruhy(KruhyNew, 10); //ani tu
-    //delete [] KruhyNew; //ani tu
+    //Kruh Kruhy[10];
+    //Kruh::generuj(Kruhy, 10);
+    //Kruh::zorad(Kruhy, 10);
+    //Kruh::vypisKruhy(Kruhy, 10);
+    Kruh * KruhyNew=Kruh::generuj( 10);
+    Kruh::vypisKruhy(KruhyNew, 10);
+    qsort(KruhyNew, 10, sizeof(Kruh), compA);
+    Kruh::vypisKruhy(KruhyNew, 10);
+    qsort(KruhyNew, 10, sizeof(Kruh), compD);
+    Kruh::vypisKruhy(KruhyNew, 10);
+    qsort(KruhyNew, 10, sizeof(Kruh), compNazov);
+
+    int (*pCompKruh)(const void * a1,const void * a2);
+    pCompKruh=compA;
+    qsort(KruhyNew,10,sizeof(Kruh), pCompKruh);
+    pCompKruh=compD;
+    qsort(KruhyNew,10,sizeof(Kruh), pCompKruh);
+    pCompKruh=compNazov;
+    qsort(KruhyNew,10,sizeof(Kruh), pCompKruh);
+
+    Kruh::vypisKruhy(KruhyNew, 10);
+    
+    delete [] KruhyNew; //ani tu
 
     //Kruh Prvy;
     //Kruh kruhy [3]={{3, 'a'},{7,'b'},{12,'l'}};
@@ -157,7 +178,10 @@ Kruh::Kruh(float mojPolomer, char mojNazov)
     polomer=mojPolomer;
     nazov=mojNazov;
 }
-
+float Kruh::getPolomer() const
+{
+    return polomer;
+}
 
 char Kruh::getNazov() const
 {
@@ -434,8 +458,29 @@ void Kruh::zorad(Kruh *pole, int pocet)
 
 void Kruh::vypisKruhy(const Kruh *pole, int pocet)
 {
+    std::cout<<"Vypis kruhov z pola:\n";
     for(int i = 0; i<pocet;++i)
     {
         std::cout<<*(pole+i);
     }
+}
+
+int compA(const void * a1, const void *a2)
+{
+    Kruh * p1 = (Kruh *)a1;
+    Kruh * p2 = (Kruh *)a2;
+    return p1->getPolomer()-p2->getPolomer();
+}
+int compD(const void * a1, const void *a2)
+{
+    Kruh * p1 = (Kruh *)a1;
+    Kruh * p2 = (Kruh *)a2;
+    return p2->getPolomer()-p1->getPolomer();
+}
+
+int compNazov(const void * a1, const void *a2)
+{
+    Kruh * p1 = (Kruh *)a1;
+    Kruh * p2 = (Kruh *)a2;
+    return p1->getNazov()-p2->getNazov();
 }
